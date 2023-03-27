@@ -1,4 +1,4 @@
-target=scanner
+target=parser
 objs=SysyBaseListener.o SysyBaseVisitor.o SysyLexer.o SysyListener.o SysyParser.o SysyVisitor.o main.o
 CC=g++
 CXXFLAGS += -std=c++17 -I /usr/local/include/antlr4-runtime -g
