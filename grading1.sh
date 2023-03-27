@@ -3,7 +3,7 @@
 cd step1
 
 if [ ! -f "parser" ];then
-  make
+  make 2>&1 >/dev/null
 fi
 
 read -p '' case
