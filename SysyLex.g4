@@ -1,88 +1,86 @@
 lexer grammar SysyLex;
 
-// keyword
-INT : 'int';
-FLOAT : 'float';
-VOID : 'void';
-CONST : 'const';
-RETURN : 'return';
-IF : 'if';
-ELSE : 'else';
-FOR : 'for';
-WHILE : 'while';
-DO : 'do';
-BREAK : 'break';
-CONTINUE : 'continue'; 
+fragment HexPrefix
+    : '0x'
+    | '0X'
+    ;
+fragment OctPrefix : '0';
 
-// delimeter
-LP : '(' ;
-RP : ')' ;
-LB : '[' ;
-RB : ']' ;
-LC : '{' ;
-RC : '}' ;
-COMMA : ',' ;
-SEMICOLON : ';';
-QUESTION : '?';
-COLON : ':';
+fragment NonzeroDigit : [1-9];
+fragment Digit : [0-9];
+fragment HexDigit : [0-9a-fA-F];
+fragment OctDegit : [0-7];
 
-// operator
-MINUS : '-';
-NOT : '!';
-ASSIGN : '=';
-ADD : '+';
-MUL : '*';
-DIV : '/';
-MOD : '%';
-AND : '&&';
-OR : '||';
-EQ : '==';
-NEQ : '!=';
-LT : '<';
-LE : '<=';
-GT : '>';
-GE : '>=';
+DecIntConst : NonzeroDigit Digit*;
+OctIntConst : OctPrefix OctDegit*;
+HexIntConst : HexPrefix HexDigit+;
 
-// integer literal
-INT_LIT
-    : [1-9][0-9]*
-    | '0'[0-7]*
-    | '0x'[0-9a-fA-F]+
-    | '0X'[0-9a-fA-F]+
+fragment Dot : '.';
+
+fragment Sign : '+' | '-' ;
+
+fragment Exponent : 'e' | 'E' ;
+fragment HexExponent : 'p' | 'P' ;
+
+fragment DecFloatFrac : Digit* Dot Digit+ | Digit+ Dot   ;
+fragment HexFloatFrac : HexDigit* Dot HexDigit+ | HexDigit+ Dot ;
+
+fragment DecFloatExp : Exponent Sign? Digit+;
+fragment BinFloatExp : HexExponent Sign? Digit+;
+
+DecFloatConst : DecFloatFrac DecFloatExp? | Digit+ DecFloatExp ;
+HexFloatConst : HexPrefix HexFloatFrac BinFloatExp
+    | HexPrefix HexDigit+ BinFloatExp
     ;
 
-// float literal
-FLOAT_LIT
-    :  ([0-9]*'.'[0-9]+|[0-9]+'.') EXP? [fF]?
-    |[0-9]+ EXP [fF]?
-    ;
+fragment Escaped : '\\'['"?\\abfnrtv];
 
-// fragment for float literal
-fragment
-EXP :  [eE] [+-]? [0-9]+ ;
+StringConst : '"' (~['"\\\r\n] | Escaped)* '"';
 
-// identifier
-ID
-    : [a-zA-Z_][a-zA-Z_0-9]*
-    ;
+Int : 'int';
+Float : 'float';
+Void : 'void';
 
-// string
-STRING : '"'(ESC|.)*?'"';
+Const : 'const';
 
-// for string
-fragment
-ESC : '\\"'|'\\\\';
+If : 'if';
+Else : 'else';
+While : 'while';
+Break : 'break';
+Continue : 'continue';
+Return : 'return';
 
-// whitespace
-WS : 
-    [ \t\r\n] -> skip
-    ;
+Assign : '=';
 
-// comments
-LINE_COMMENT : '//' .*? '\r'? '\n' -> skip;
-BLOCK_COMMENT : '/*'.*?'*/'-> skip ;
+Add : '+';
+Sub : '-';
+Mul : '*';
+Div : '/';
+Mod : '%';
 
-// obvious lexical error
-LEX_ERR :  [0-9]+[a-zA-Z]*[0-9]* 
-        ;
+Eq : '==';
+Neq : '!=';
+Lt : '<';
+Gt : '>';
+Leq : '<=';
+Geq : '>=';
 
+Not : '!';
+And : '&&';
+Or : '||';
+
+Comma : ',';
+Semicolon : ';';
+Lparen : '(';
+Rparen : ')';
+Lbracket : '[';
+Rbracket : ']';
+Lbrace : '{';
+Rbrace : '}';
+
+Ident : [A-Za-z_][_0-9A-Za-z]*;
+
+Whitespace : [ \t\r\n]+ -> skip;
+
+LineComment : '//' ~[\r\n]* -> skip;
+BlockComment : '/*' .*? '*/' -> skip;

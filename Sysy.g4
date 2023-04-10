@@ -2,115 +2,141 @@ grammar Sysy;
 
 import SysyLex;
 
-compUnit : (decl | funcDef)* EOF;
-
-decl : constDecl | varDecl;
-
-constDecl : 'const' bType constDef (',' constDef)* ';' ;
-
-bType: 'int' | 'float';
-
-constDef : ID ('[' constExp ']')* '=' constInitVal;
-
-constInitVal
-    : constExp # scalarConstInitVal
-    | '{' (constInitVal (',' constInitVal)* )? '}' # listConstInitVal
+compUnit : compUnitItem* EOF;
+compUnitItem
+    : decl
+    | funcDef
     ;
 
-varDecl : bType varDef (',' varDef)* ';';
-
-varDef
-    : ID ('[' constExp ']')* # uninitVarDef
-    | ID ('[' constExp ']')* '=' initVal # initVarDef
+decl
+    : constDecl
+    | varDecl
     ;
+
+constDecl : Const bType constDef (Comma constDef)* Semicolon;
+
+bType
+    : Int  # int
+    | Float  # float
+    ;
+
+constDef : Ident (Lbracket exp Rbracket)* Assign initVal;
+
+varDecl : bType varDef (Comma varDef)* Semicolon;
+
+varDef : Ident (Lbracket exp Rbracket)* (Assign initVal)?;
 
 initVal
-    : exp # scalarInitVal
-    | '{' (initVal (',' initVal)* )? '}' # listInitval
+    : exp  # init
+    | Lbrace (initVal (Comma initVal)*)? Rbrace  # initList
     ;
 
-funcDef : funcType ID '(' (funcFParams)? ')' block;
+funcDef : funcType Ident Lparen funcFParams? Rparen block;
 
-funcType : 'void' | 'int' |'float';
+funcType
+    : bType  # funcType_
+    | Void  # void
+    ;
 
-funcFParams : funcFParam (',' funcFParam)*;
+funcFParams : funcFParam (Comma funcFParam)*;
 
-funcFParam : bType ID ('[' ']' ('[' constExp ']')* )?;
+funcFParam
+    : bType Ident  # scalarParam
+    | bType Ident Lbracket Rbracket (Lbracket exp Rbracket)*  # arrayParam
+    ;
 
-block : '{' (blockItem)* '}';
+block : Lbrace blockItem* Rbrace;
 
-blockItem : decl | stmt;
+blockItem
+    : decl
+    | stmt
+    ;
 
 stmt
-    : lVal '=' exp ';' # assignment
-    | (exp)? ';' # expStmt
-    | block # blockStmt
-    | 'if' '(' cond ')' stmt # ifStmt1
-    | 'if' '(' cond ')' stmt 'else' stmt # ifStmt2
-    | 'while' '(' cond ')' stmt # whileStmt
-    | 'break' ';' # breakStmt
-    | 'continue' ';' # continueStmt
-    | 'return' (exp)? ';' # returnStmt
+    : lVal Assign exp Semicolon  # assign
+    | exp? Semicolon  # exprStmt
+    | block  # blockStmt
+    | If Lparen cond Rparen stmt (Else stmt)?  # ifElse
+    | While Lparen cond Rparen stmt  # while
+    | Break Semicolon  # break
+    | Continue Semicolon  # continue
+    | Return exp? Semicolon  # return
     ;
 
 exp : addExp;
 
 cond : lOrExp;
 
-lVal : ID ('[' exp ']')*;
+lVal : Ident (Lbracket exp Rbracket)*;
 
 primaryExp
-    : '(' exp ')' # primaryExp1
-    | lVal # primaryExp2
-    | number # primaryExp3
+    : Lparen exp Rparen  # primaryExp_
+    | lVal  # lValExpr
+    | number  # primaryExp_
     ;
 
-number : INT_LIT | FLOAT_LIT;
+intConst
+    : DecIntConst  # decIntConst
+    | OctIntConst  # octIntConst
+    | HexIntConst  # hexIntConst
+    ;
+floatConst
+    : DecFloatConst  # decFloatConst
+    | HexFloatConst  # hexFloatConst
+    ;
+number
+    : intConst
+    | floatConst
+    ;
 
 unaryExp
-    : primaryExp # unary1
-    | ID '(' (funcRParams)? ')' # unary2
-    | unaryOp unaryExp # unary3
+    : primaryExp  # unaryExp_
+    | Ident Lparen funcRParams? Rparen  # call
+    | Add unaryExp  # unaryAdd
+    | Sub unaryExp  # unarySub
+    | Not unaryExp  # not
     ;
 
-unaryOp : '+' | '-' | '!';
-
-funcRParams : funcRParam (',' funcRParam)*;
-
+stringConst : StringConst;
 funcRParam
-    : exp # expAsRParam
-    | STRING # stringAsRParam
+    : exp
+    | stringConst
     ;
+funcRParams : funcRParam (Comma funcRParam)*;
 
 mulExp
-    : unaryExp # mul1
-    | mulExp ('*' | '/' | '%') unaryExp # mul2
+    : unaryExp  # mulExp_
+    | mulExp Mul unaryExp  # mul
+    | mulExp Div unaryExp  # div
+    | mulExp Mod unaryExp  # mod
     ;
 
 addExp
-    : mulExp # add1
-    | addExp ('+' | '-') mulExp # add2
+    : mulExp  # addExp_
+    | addExp Add mulExp  # add
+    | addExp Sub mulExp  # sub
     ;
 
 relExp
-    : addExp # rel1
-    | relExp ('<' | '>' | '<=' | '>=') addExp # rel2
+    : addExp  # relExp_
+    | relExp Lt addExp  # lt
+    | relExp Gt addExp  # gt
+    | relExp Leq addExp  # leq
+    | relExp Geq addExp  # geq
     ;
+
 eqExp
-    : relExp # eq1
-    | eqExp ('==' | '!=') relExp # eq2
+    : relExp  # eqExp_
+    | eqExp Eq relExp  # eq
+    | eqExp Neq relExp  # neq
     ;
 
 lAndExp
-    : eqExp # lAnd1
-    | lAndExp '&&' eqExp # lAnd2
+    : eqExp  # lAndExp_
+    | lAndExp And eqExp  # and
     ;
 
 lOrExp
-    : lAndExp # lOr1
-    | lOrExp '||' lAndExp # lOr2
-    ;
-
-constExp
-    : addExp
+    : lAndExp  # lOrExp_
+    | lOrExp Or lAndExp  # or
     ;
