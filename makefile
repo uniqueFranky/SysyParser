@@ -1,6 +1,6 @@
 target=scanner
 CC=g++
-CXXFLAGS += -std=c++17 -I /usr/local/include/antlr4-runtime -I./src/frontend -g
+CXXFLAGS += -std=c++17 -I /usr/local/include/antlr4-runtime -I./src/frontend -g -w
 LIBS += -lantlr4-runtime -L /usr/local/lib
 
 # Source files
@@ -21,4 +21,4 @@ $(target): $(OBJS)
 .PHONY: clean
 
 clean:
-	rm -f src/frontend/*.o src/main.o scanner
+	rm -f src/frontend/*.o src/main.o scanner test_cases/*.ast.txt
