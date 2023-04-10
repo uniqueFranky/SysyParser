@@ -17,3 +17,8 @@ $(target): $(OBJS)
 
 %.o: %.cpp
 	$(CC) -c $< -o $@ $(CXXFLAGS)
+
+.PHONY: clean
+
+clean:
+	rm -f src/frontend/*.o src/main.o scanner

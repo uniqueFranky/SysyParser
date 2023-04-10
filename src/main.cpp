@@ -3,6 +3,7 @@
 #include <set>
 #include <vector>
 #include <map>
+#include <string>
 #include "antlr4-runtime.h"
 #include "frontend/SysyParser.h"
 #include "frontend/SysyLexer.h"
@@ -28,7 +29,10 @@ int main(int argc, const char* argv[]) {
     auto ast = visitor.compileUnit();
     AstRewriter rewriter;
     rewriter.visit_compile_unit(*ast);
-    ast->print(cout,0);
+    string output_file_name = string(argv[1]) + ".ast.txt";
+    ofstream of;
+    of.open(output_file_name);
+    ast->print(of,0);
 
     return 0;
 }
