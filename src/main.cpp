@@ -22,7 +22,7 @@ int main(int argc, const char* argv[]) {
     SysyLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     SysyParser parser(&tokens);
-    auto root = parser.compUnit();
+    auto root = parser.CompUnit();
     frontend::AstVisitor visitor;
     visitor.visitCompUnit(root);
     auto ast = visitor.compileUnit();
