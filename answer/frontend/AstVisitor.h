@@ -111,6 +111,7 @@ namespace frontend {
     private:
         std::vector<std::unique_ptr<Expression>>
         visitDimensions(const std::vector<SysyParser::ExpContext *> &ctxs);
+
         std::unique_ptr<CompileUnit> m_compile_unit;
     };
 

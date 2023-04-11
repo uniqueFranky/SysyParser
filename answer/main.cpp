@@ -21,6 +21,7 @@ int main(int argc, const char* argv[]) {
     ANTLRInputStream input(stream);
     SysyLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
+    tokens.fill();
     SysyParser parser(&tokens);
     auto root = parser.compUnit();
     frontend::AstVisitor visitor;
