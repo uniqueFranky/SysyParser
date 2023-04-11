@@ -40,7 +40,7 @@ int main(int argc, const char* argv[]) {
     parser.removeErrorListeners();
     parser.addErrorListener(&errorListener);
 
-    parser.compUnit();
+    parser.CompUnit();
     sort(V.begin(),V.end());
     auto line = V.begin();
     cout << "Error at line " << line->first << endl << line->second << endl;
