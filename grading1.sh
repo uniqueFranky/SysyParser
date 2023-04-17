@@ -2,10 +2,8 @@
 
 cd step1
 
-make clean 2>&1 >/dev/null
-if [ ! -f "parser" ];then
-  make 2>&1 >/dev/null
-fi
+make 2>&1 >/dev/null
+
 
 read -p '' case
 chmod +x parser
