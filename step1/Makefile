@@ -8,3 +8,9 @@ main:$(objs)
 	$(CC) -o $(target)  $(objs) $(LIBS)
 %.o:%.cpp
 	$(CC) -c $<
+
+.PHONY: clean
+
+clean:
+	rm -f *.o $(target)
+	rm -f Sysy*
