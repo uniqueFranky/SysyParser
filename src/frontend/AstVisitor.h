@@ -9,7 +9,14 @@ namespace frontend {
     using namespace ast;
 
     class AstVisitor : public SysyBaseVisitor {
+
+    // 继承自antlr生成的SysyBaseVisitor类，对可能访问的AST节点重写visit成员函数
+    // 注意：在语法文件中，你的每一条语法规则的第一个字母都是小写字母，但是antlr生成的SysyBaseVisitor类会将语法规则的首字母改为大写
+    // 你可以参考注释中的内容（示例），来根据你的语法文件进行改写
+    // TODO: your code
+    /*
     public:
+        // nodiscard表示返回值必须被使用
         [[nodiscard]] std::unique_ptr<CompileUnit> compileUnit();
 
         antlrcpp::Any visitCompUnit(SysyParser::CompUnitContext *ctx) override;
@@ -107,11 +114,13 @@ namespace frontend {
         antlrcpp::Any visitOr(SysyParser::OrContext *ctx) override;
 
         antlrcpp::Any visitNumber(SysyParser::NumberContext *ctx) override;
-
+*/
     private:
         std::vector<std::unique_ptr<Expression>>
         visitDimensions(const std::vector<SysyParser::ExpContext *> &ctxs);
         std::unique_ptr<CompileUnit> m_compile_unit;
+        
     };
+    
 
 } // namespace frontend

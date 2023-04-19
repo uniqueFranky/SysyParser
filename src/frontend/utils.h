@@ -7,6 +7,8 @@
 
 using std::ostream;
 
+// 一些调试输出用的函数
+
 inline ostream &error(ostream &os) {
     os << "\033[0;31m[error]\033[0m ";
     return os;
