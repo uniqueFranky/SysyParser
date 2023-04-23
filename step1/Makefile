@@ -1,11 +1,11 @@
 target=parser
 objs=SysyBaseListener.o SysyBaseVisitor.o SysyLexer.o SysyListener.o SysyParser.o SysyVisitor.o main.o
 CC=g++
-CXXFLAGS += -std=c++17 -I /usr/local/include/antlr4-runtime
-LIBS += -lantlr4-runtime -L /usr/local/lib
+CXXFLAGS += -std=c++17 
+LIBS += -lantlr4-runtime -L 
 
-main:$(objs)
-	$(CC) -o $(target)  $(objs) $(LIBS) $(CXXFLAGS)
+$(target):$(objs)
+	$(CC) -o $(target)  $(objs) $(LIBS)
 %.o:%.cpp
 	$(CC) -c $< $(CXXFLAGS)
 
