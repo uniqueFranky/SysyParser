@@ -8,4 +8,6 @@ $(target):$(objs)
 	$(CC) -o $(target)  $(objs) $(LIBS)
 %.o:%.cpp
 	$(CC) -c $< $(CXXFLAGS)
-
+.PHONY: clean    
+clean:
+	rm parser Sysy*.* main.o -f
