@@ -1,6 +1,6 @@
 #!/bin/bash
 
-make clean 2>&1 >/dev/null
+#ake clean 2>&1 >/dev/null
 make 2>&1 >/dev/null
 
 if [ ! -f "scanner" ]; then
