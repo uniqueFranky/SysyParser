@@ -19,14 +19,14 @@ vector<pair<size_t,string>> V;
 class MyErrorListener : public BaseErrorListener {
 public:
     void syntaxError(Recognizer *recognizer, Token *offendingSymbol, size_t line, size_t charPositionInLine, const std::string &msg, std::exception_ptr e) override {
-        //std::cout << "Error at line " << line << ": " << msg << std::endl;
+        std::cout << "Error at line " << line << ": " << msg << std::endl;
         
         if (is_occured.find(line) == is_occured.end()) {
             is_occured[line] = true;
             V.push_back(make_pair(line,msg));
         }
         
-        //V.push_back(make_pair(line,msg));
+        V.push_back(make_pair(line,msg));
 
     }
 };
