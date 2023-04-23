@@ -10,7 +10,7 @@ using namespace frontend;
 
 // 根据你的AstVisitor.h来改写，可以参考注释中的内容
 // TODO: your code
-/*
+
 std::unique_ptr<CompileUnit> AstVisitor::compileUnit() {
     // unique_ptr只能move返回
     return std::move(m_compile_unit);
@@ -479,4 +479,3 @@ AstVisitor::visitDimensions(const std::vector<SysyParser::ExpContext *> &ctxs) {
     }
     return ret;
 }
-*/
