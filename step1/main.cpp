@@ -5,7 +5,6 @@
 #include "SysyBaseListener.h"
 #include "SysyBaseVisitor.h"
 #include "SysyParser.h"
-#include "main.h"
 #include "ANTLRInputStream.h"
 #include "CommonTokenStream.h"
 #include <vector>
