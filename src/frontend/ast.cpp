@@ -12,9 +12,6 @@ using std::ostream;
 using AstScalarType = frontend::ast::ScalarType;
 
 std::string_view op_string(UnaryOp op) {
-    // 一元运算符类型的字符串表示，根据你的需要改写
-    // TODO: your code
-    
     switch (op) {
         case UnaryOp::Add:
             return "+";
@@ -24,26 +21,18 @@ std::string_view op_string(UnaryOp op) {
             return "!";
     }
     return "<unknown_unary_op>";
- 
 }
 
 std::string_view op_string(BinaryOp op) {
-    // 一元运算符类型的字符串表示，根据你的需要改写
-    // TODO: your code
-  
     unsigned i = static_cast<unsigned>(op);
     if (op >= BinaryOp::NR_OPS)
         return "<unknown_binary_op>";
     static constexpr std::string_view op_strs[] = {
             "+", "-", "*", "/", "%", "==", "!=", "<", ">", "<=", ">=", "&&", "||"};
     return op_strs[i];
-    
 }
 
 std::string_view type_string(int type) {
-    // 类型的字符串表示，根据你的需要改写
-    // TODO: your code
-   
     switch (type) {
         case Int:
             return "int";
@@ -53,14 +42,12 @@ std::string_view type_string(int type) {
             break;
     }
     return "<unknown_scalar_type>";
-   
+}
 
 std::string_view type_string(const AstScalarType *type) {
- 
     if (!type)
         return "void";
     return type_string(type->type());
-   
 }
 
 ostream &operator<<(ostream &os, const std::unique_ptr<AstScalarType> &type) {
@@ -69,7 +56,6 @@ ostream &operator<<(ostream &os, const std::unique_ptr<AstScalarType> &type) {
 }
 
 ostream &operator<<(ostream &os, const Identifier &ident) {
-    // 用于输出空格，对齐
     os << ident.name();
     return os;
 }
@@ -81,6 +67,7 @@ ostream &operator<<(ostream &os, const ArrayType &type) {
         n_dims++;
     for (int i = 0; i < n_dims; ++i)
         os << "[]";
+    // TODO: dimension的具体信息
     return os;
 }
 
@@ -127,8 +114,6 @@ void Parameter::print(std::ostream &out, unsigned int indent) const {
 }
 
 void LValue::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
     print_indent(out, indent);
     out << "LValue " << m_ident;
     for (auto const &index : this->m_indices) {
@@ -138,64 +123,40 @@ void LValue::print(std::ostream &out, unsigned int indent) const {
         out << ']';
     }
     out << '\n';
-  
 }
 
 void UnaryExpr::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-    
     print_indent(out, indent);
     out << "UnaryExpr " << op_string(m_op) << '\n';
     assert(m_operand);
     m_operand->print(out, indent + INDENT_LEN);
-  
 }
 
 void BinaryExpr::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
- 
     print_indent(out, indent);
     out << "BinaryExpr " << op_string(m_op) << '\n';
     assert(m_lhs);
     assert(m_rhs);
     m_lhs->print(out, indent + INDENT_LEN);
     m_rhs->print(out, indent + INDENT_LEN);
-  
 }
 
 void IntLiteral::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-    
     print_indent(out, indent);
     out << "IntLiteral " << m_value << '\n';
-  
 }
 
 void FloatLiteral::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-
     print_indent(out, indent);
     out << "FloatLiteral " << m_value << '\n';
-  
 }
 
 void StringLiteral::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-
     print_indent(out, indent);
     out << "StringLiteral " << m_value << '\n';
-  
 }
 
 void Call::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
- 
     print_indent(out, indent);
     out << "Call " << m_func << '\n';
     for (auto &arg : m_args) {
@@ -208,37 +169,25 @@ void Call::print(std::ostream &out, unsigned int indent) const {
             literal.print(out, indent + INDENT_LEN);
         }
     }
-
 }
 
 void ExprStmt::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
- 
     print_indent(out, indent);
     out << "ExprStmt\n";
     if (m_expr)
         m_expr->print(out, indent + INDENT_LEN);
-       
 }
 
 void Assignment::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-   
     print_indent(out, indent);
     out << "Assignment\n";
     assert(m_lhs);
     m_lhs->print(out, indent + INDENT_LEN);
     assert(m_rhs);
     m_rhs->print(out, indent + INDENT_LEN);
-   
 }
 
 void Initializer::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-
     print_indent(out, indent);
     out << "Initializer\n";
     if (m_value.index() == 0) {
@@ -253,13 +202,9 @@ void Initializer::print(std::ostream &out, unsigned int indent) const {
             initializer->print(out, indent + INDENT_LEN);
         }
     }
-    
 }
 
 void Declaration::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-   
     print_indent(out, indent);
     out << "Declaration ";
     if (m_const_qualified)
@@ -267,13 +212,9 @@ void Declaration::print(std::ostream &out, unsigned int indent) const {
     out << m_type << ' ' << m_ident << '\n';
     if (m_init)
         m_init->print(out, indent + INDENT_LEN);
-      
 }
 
 void Block::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-    
     print_indent(out, indent);
     out << "Block\n";
     for (auto &child : m_children) {
@@ -287,13 +228,9 @@ void Block::print(std::ostream &out, unsigned int indent) const {
             stmt->print(out, indent + INDENT_LEN);
         }
     }
-   
 }
 
 void IfElse::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-   
     print_indent(out, indent);
     out << "IfElse\n";
 
@@ -312,13 +249,9 @@ void IfElse::print(std::ostream &out, unsigned int indent) const {
         out << "Else\n";
         m_else->print(out, indent + INDENT_LEN * 2);
     }
-    
 }
 
 void While::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
- 
     print_indent(out, indent);
     out << "While\n";
 
@@ -331,39 +264,26 @@ void While::print(std::ostream &out, unsigned int indent) const {
     out << "Body\n";
     assert(m_body);
     m_body->print(out, indent + INDENT_LEN * 2);
-   
 }
 
-void Break::print(std::ostream &out, unsigned int indent) const { 
-    // TODO: your code
-
-  
+void Break::print(std::ostream &out, unsigned int indent) const {
     print_indent(out, indent);
     out << "Break\n";
-  
 }
 
 void Continue::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
- 
     print_indent(out, indent);
     out << "Continue\n";
- 
+}
 
-void Return::print(std::ostream &out, unsigned int indent) const { 
- 
+void Return::print(std::ostream &out, unsigned int indent) const {
     print_indent(out, indent);
     out << "Return\n";
     if (m_res)
         m_res->print(out, indent + INDENT_LEN);
-   
 }
 
 void Function::print(std::ostream &out, unsigned int indent) const {
-    // TODO: your code
-
-
     print_indent(out, indent);
     out << "Function " << m_type << ' ' << m_ident;
     out << '(';
@@ -376,12 +296,11 @@ void Function::print(std::ostream &out, unsigned int indent) const {
     out << ")\n";
     assert(m_body);
     m_body->print(out, indent + INDENT_LEN);
-  
 }
 
 void CompileUnit::print(std::ostream &out, unsigned int indent) const {
     print_indent(out, indent);
-    out << "CompUnit\n";
+    out << "CompileUnit\n";
     for (auto &child : m_children) {
         if (child.index() == 0) {
             auto &decl = std::get<std::unique_ptr<Declaration>>(child);
@@ -394,7 +313,6 @@ void CompileUnit::print(std::ostream &out, unsigned int indent) const {
 }
 
 bool swappable(BinaryOp op) {
-
     switch (op) {
         case BinaryOp::Add:
         case BinaryOp::Mul:
@@ -408,7 +326,6 @@ bool swappable(BinaryOp op) {
         default:
             return false;
     }
- 
 }
 
 std::string LValue::to_string() const {
@@ -427,8 +344,6 @@ std::string UnaryExpr::to_string() const {
 }
 
 std::string BinaryExpr::to_string() const {
-    // TODO: your code
-
     auto op = m_op;
     auto lhs = m_lhs->to_string();
     auto rhs = m_rhs->to_string();
@@ -445,7 +360,6 @@ std::string BinaryExpr::to_string() const {
         std::swap(lhs, rhs);
     auto ops = std::string{op_string(op)};
     return lhs + ops + rhs;
-   
 }
 
 std::string IntLiteral::to_string() const {
@@ -457,9 +371,6 @@ std::string FloatLiteral::to_string() const {
 }
 
 std::string Call::to_string() const {
-    // TODO: your code
-
- 
     std::string s = m_func.name() + "(";
     auto arg_string = [](const Argument &arg) {
         if (arg.index() == 0)
@@ -475,5 +386,4 @@ std::string Call::to_string() const {
     }
     s += ")";
     return s;
-
 }
