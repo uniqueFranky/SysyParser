@@ -16,12 +16,10 @@
 
 enum class UnaryOp { 
     // 你定义的一元运算的语法规则，注释中的为示例，根据你的需要改写
-    // Add, Sub, Not
-    // TODO: your code
-    };
+    Add, Sub, Not
+     };
 
 enum class BinaryOp {
-    /*
     Add,
     Sub,
     Mul,
@@ -38,17 +36,17 @@ enum class BinaryOp {
     Shr,
     Shl,
     NR_OPS
-    */
+    
    // 意义类同上面的UnaryOp，NR_OPS作为哨兵，当visit AST时遇到的二元运算符的标号大于等于NR_OPS时，报错
    // TODO: your code
 };
 
 enum ScalarType {
-    /*
+   
     Int,
     Float,
     String,
-    */
+   
    // 标量类型，根据你的需要改写。
    // TODO: your code
 };
@@ -121,22 +119,21 @@ struct ConstValue {
     // TODO: your code
 
     // 构造函数
-    //ConstValue(int v) : type{Int} { iv = v; }
-    //ConstValue(float v) : type{Float} { fv = v; }
+    ConstValue(int v) : type{Int} { iv = v; }
+    ConstValue(float v) : type{Float} { fv = v; }
 
     // check ConstValue == 0 / 1
     bool isValue(int x) const {
-        /*
         if (type == Int) {
             return iv == x;
         } else {
             return fv == x;
         }
-        */
+       
     }
 
     bool isOpposite(const ConstValue &b) const {
-        /*
+      
         if (type != b.type)
             return false;
         if (type == Int)
@@ -145,11 +142,11 @@ struct ConstValue {
             return fv + b.fv == 0;
         assert(false);
         return false;
-        */
+      
     }
 
     ConstValue getOpposite() const {
-        /*
+      
         ConstValue new_const = (*this);
         if (type == Int) {
             new_const.iv = -new_const.iv;
@@ -158,11 +155,11 @@ struct ConstValue {
         } else
             assert(false);
         return new_const;
-        */
+     
     }
 
     bool operator==(const ConstValue &b) const {
-        /*
+    
         if (type != b.type)
             return false;
         if (type == Int)
@@ -172,18 +169,18 @@ struct ConstValue {
         // 如果运行到这里，说明代码出现问题
         assert(false);
         return false;
-        */
+     
     }
     bool operator!=(const ConstValue &b) const { return !this->operator==(b); }
 
     std::string to_string() const {
-        /*
+      
         if (type == Int)
             return std::to_string(iv);
         if (type == Float)
             return std::to_string(fv);
         assert(false);
-        */
+       
     }
 };
 
