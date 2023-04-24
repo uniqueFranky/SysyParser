@@ -21,5 +21,5 @@ $(target): $(OBJS)
 .PHONY: clean
 
 clean:
-	rm -f src/frontend/*.o src/main.o scanner test_cases/*.ast.txt syrc/Sysy*.*
+	rm -f src/frontend/*.o src/main.o scanner test_cases/*.ast.txt src/Sysy*.*
     
