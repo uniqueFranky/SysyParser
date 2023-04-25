@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd step1
+cd src
 
 make 2>&1 >/dev/null
 
