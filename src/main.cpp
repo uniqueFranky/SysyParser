@@ -5,12 +5,12 @@
 #include <map>
 #include <string>
 #include "antlr4-runtime.h"
-#include "frontend/SysyParser.h"
-#include "frontend/SysyLexer.h"
-#include "frontend/SysyBaseVisitor.h"
-#include "frontend/SysyBaseListener.h"
-#include "frontend/AstVisitor.h"
-#include "frontend/AstRewriter.h"
+#include "SysyParser.h"
+#include "SysyLexer.h"
+#include "SysyBaseVisitor.h"
+#include "SysyBaseListener.h"
+#include "AstVisitor.h"
+#include "AstRewriter.h"
 
 using namespace std;
 using namespace antlr4;
