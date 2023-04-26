@@ -9,5 +9,5 @@ if [ ! -f "parser" ]; then
 else
   read -p '' case
   chmod +x parser
-  ./parser ./test_cases/$case
+  ./parser -ast  ./test_cases/$case
 fi
