@@ -20,13 +20,11 @@ int main(int argc, const char* argv[]) {
     bool print_ast = false;
     std::string filename = "-";
 
-    if (argc >= 2) {
-        for (int i = 1; i < argc; i++) {
-            if (argv[i] == std::string("-ast")) {
-                print_ast = true;
-            } else {
-                filename = argv[i];
-            }
+    for (int i = 1; i < argc; i++) {
+        if (argv[i] == std::string("-ast")) {
+            print_ast = true;
+        } else {
+            filename = argv[i];
         }
     }
 
