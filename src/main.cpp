@@ -35,7 +35,7 @@ int main(int argc, const char* argv[]) {
         std::cout << source << ":" << std::endl; 
     }
 
-    ifstream stream(filename); //读入测试用例 //读入测试用例
+    ifstream stream(filename); //读入测试用例 
     ANTLRInputStream input(stream);  
     SysyLexer lexer(&input);  //词法解析
     CommonTokenStream tokens(&lexer);  //生成TokenStream
