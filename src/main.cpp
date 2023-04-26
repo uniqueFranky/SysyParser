@@ -18,7 +18,7 @@ using namespace frontend;
 
 int main(int argc, const char* argv[]) {
     bool print_ast = false;
-    std::string filename;
+    std::string filename = "-";
 
     if (argc > 2) {
         for (int i = 1; i < argc; i++) {
@@ -30,12 +30,11 @@ int main(int argc, const char* argv[]) {
         }
     }
 
-    std::ifstream stream; //读入测试用例
-    stream.open(filename);
+    ifstream stream(filename); //读入测试用例 //读入测试用例
     ANTLRInputStream input(stream);  
     SysyLexer lexer(&input);  //词法解析
     CommonTokenStream tokens(&lexer);  //生成TokenStream
-    tokens.fill();
+    //tokens.fill();
     SysyParser parser(&tokens);   //语法解析
     auto root = parser.compUnit();   //得到AST的根节点
 
