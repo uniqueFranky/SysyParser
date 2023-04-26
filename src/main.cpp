@@ -30,8 +30,8 @@ int main(int argc, const char* argv[]) {
 
     if (!print_ast) {
         std::string source;
-        int slash_pos = file_name.find_last_of("/");
-        source = file_name.substr(slash_pos + 1);
+        int slash_pos = filename.find_last_of("/");
+        source = filename.substr(slash_pos + 1);
         cout << source << ":" << end; 
     }
 
