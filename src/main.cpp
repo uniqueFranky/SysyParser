@@ -28,6 +28,13 @@ int main(int argc, const char* argv[]) {
         }
     }
 
+    if (!print_ast) {
+        std::string source;
+        int slash_pos = file_name.find_last_of("/");
+        source = file_name.substr(slash_pos + 1);
+        cout << source << ":" << end; 
+    }
+
     ifstream stream(filename); //读入测试用例 //读入测试用例
     ANTLRInputStream input(stream);  
     SysyLexer lexer(&input);  //词法解析
