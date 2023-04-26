@@ -32,7 +32,7 @@ int main(int argc, const char* argv[]) {
         std::string source;
         int slash_pos = filename.find_last_of("/");
         source = filename.substr(slash_pos + 1);
-        cout << source << ":" << end; 
+        std::cout << source << ":" << std::endl; 
     }
 
     ifstream stream(filename); //读入测试用例 //读入测试用例
