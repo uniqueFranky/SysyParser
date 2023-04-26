@@ -30,10 +30,12 @@ int main(int argc, const char* argv[]) {
         }
     }
 
-    ifstream stream(filename); //读入测试用例
+    std::ifstream stream; //读入测试用例
+    stream.open(filename);
     ANTLRInputStream input(stream);  
     SysyLexer lexer(&input);  //词法解析
     CommonTokenStream tokens(&lexer);  //生成TokenStream
+    tokens.fill();
     SysyParser parser(&tokens);   //语法解析
     auto root = parser.compUnit();   //得到AST的根节点
 
