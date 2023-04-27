@@ -203,10 +203,9 @@ antlrcpp::Any AstVisitor::visitIfElse(SysyParser::IfElseContext *const ctx) {
 }
 
 antlrcpp::Any AstVisitor::visitWhile(SysyParser::WhileContext *const ctx) {
-    auto const cond_ = ctx->cond()->accept(this).as<Expression *>();
-    std::unique_ptr<Expression> cond(cond_);
-    auto const body_ = ctx->stmt()->accept(this).as<Statement *>();
-    std::unique_ptr<Statement> body(body_);
+
+
+
     auto const ret = new While(std::move(cond), std::move(body));
     return static_cast<Statement *>(ret);
 }
