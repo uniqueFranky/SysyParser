@@ -4,7 +4,7 @@ CXXFLAGS += -std=c++17  -g -w
 LIBS += -lantlr4-runtime
 
 # Source files
-SRCS = main.cpp ast.cpp AstRewriter.cpp AstVisitor.cpp SysyBaseListener.cpp SysyBaseVisitor.cpp SysyLexer.cpp SysyListener.cpp SysyParser.cpp SysyVisitor.cpp
+SRCS = main.cpp ast.cpp AstVisitor.cpp SysyBaseListener.cpp SysyBaseVisitor.cpp SysyLexer.cpp SysyListener.cpp SysyParser.cpp SysyVisitor.cpp
 
 # Object files
 OBJS = $(SRCS:.cpp=.o)
