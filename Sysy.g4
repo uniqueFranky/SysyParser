@@ -52,7 +52,16 @@ blockItem
     | stmt
     ;
 
-# 
+# 以下方法没有实现的部分请补充完整，请将终结符用词法规则中对应的Token符号代替
+#    词法规则定义在SysyLex.g4中
+
+# Stmt → LVal '=' Exp ';' | [Exp] ';' | Block
+# | 'if' '( Cond ')' Stmt [ 'else' Stmt ]
+# | 'while' '(' Cond ')' Stmt
+# | 'break' ';
+# | 'continue' ';'
+# | 'return' [Exp] ';'
+
 stmt
     : lVal Assign exp Semicolon  # assign
     | exp? Semicolon  # exprStmt
