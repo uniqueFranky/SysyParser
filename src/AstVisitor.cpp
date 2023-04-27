@@ -202,13 +202,16 @@ antlrcpp::Any AstVisitor::visitIfElse(SysyParser::IfElseContext *const ctx) {
     return static_cast<Statement *>(ret);
 }
 
+// ***************  TODO:　你需要完成该方法  ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 antlrcpp::Any AstVisitor::visitWhile(SysyParser::WhileContext *const ctx) {
 
 
 
-    auto const ret = new While(std::move(cond), std::move(body));
+    auto const ret = new While(0, 0); // 请在补充代码的同时，正确填写两个形参
     return static_cast<Statement *>(ret);
 }
+
+// **************   END  ***********************************************
 
 antlrcpp::Any AstVisitor::visitBreak(SysyParser::BreakContext *const ctx) {
     auto const ret = new Break;
