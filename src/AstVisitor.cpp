@@ -207,7 +207,7 @@ antlrcpp::Any AstVisitor::visitWhile(SysyParser::WhileContext *const ctx) {
 
 
 
-    auto const ret = new While(0, 0); // 请在补充代码的同时，正确填写两个形参
+    auto const ret = new While(nullptr, nullptr); // 请在补充代码的同时，正确填写两个形参
     return static_cast<Statement *>(ret);
 }
 
