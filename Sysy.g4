@@ -69,9 +69,10 @@ stmt
     | exp? Semicolon  # exprStmt
     | block  # blockStmt
     | If Lparen cond Rparen stmt (Else stmt)?  # ifElse
-
-
-
+    | While Lparen cond Rparen stmt # while
+    | Break Semicolon # break
+    | Continue Semicolon # continue
+    | Return exp? Semicolon # return
 
     ;
 

@@ -22,7 +22,7 @@ AstVisitor::visitCompUnit(SysyParser::CompUnitContext *const ctx) {
                 children.emplace_back(std::unique_ptr<Declaration>(d));
             }
         } else if (auto func_ = item->funcDef()) {
-            auto const func = std::any_cast<Function *>(func_->accept(this));
+            auto const func = (func_->accept(this)).as<Function *>();
             children.emplace_back(std::unique_ptr<Function>(func));
         } else {
             assert(false);
@@ -35,7 +35,7 @@ AstVisitor::visitCompUnit(SysyParser::CompUnitContext *const ctx) {
 
 antlrcpp::Any
 AstVisitor::visitConstDecl(SysyParser::ConstDeclContext *const ctx) {
-    auto const base_type_ = std::any_cast<ScalarType *>(ctx->bType()->accept(this));
+    auto const base_type_ = (ctx->bType()->accept(this)).as<ScalarType *>();
     std::unique_ptr<ScalarType> base_type(base_type_);
     std::vector<Declaration *> ret;
     for (auto def : ctx->constDef()) {
@@ -47,7 +47,7 @@ AstVisitor::visitConstDecl(SysyParser::ConstDeclContext *const ctx) {
         } else {
             type = std::make_unique<ArrayType>(*base_type, std::move(dimensions), false);
         }
-        auto const init_ = std::any_cast<Initializer *>(def->initVal()->accept(this));
+        auto const init_ = (def->initVal()->accept(this)).as<Initializer *>();
         std::unique_ptr<Initializer> init(init_);
         ret.push_back(new Declaration(std::move(type), std::move(ident),
                                       std::move(init), true));
@@ -64,7 +64,7 @@ antlrcpp::Any AstVisitor::visitFloat(SysyParser::FloatContext *const ctx) {
 }
 
 antlrcpp::Any AstVisitor::visitVarDecl(SysyParser::VarDeclContext *const ctx) {
-    auto const base_type_ = std::any_cast<ScalarType *>(ctx->bType()->accept(this));
+    auto const base_type_ = (ctx->bType()->accept(this)).as<ScalarType *>();
     std::unique_ptr<ScalarType> base_type(base_type_);
     std::vector<Declaration *> ret;
     for (auto def : ctx->varDef()) {
@@ -78,7 +78,7 @@ antlrcpp::Any AstVisitor::visitVarDecl(SysyParser::VarDeclContext *const ctx) {
         }
         std::unique_ptr<Initializer> init;
         if (auto init_val = def->initVal()) {
-            init.reset(std::any_cast<Initializer *>(init_val->accept(this)));
+            init.reset((init_val->accept(this))).as<Initializer *>();
         }
         ret.push_back(new Declaration(std::move(type), std::move(ident),
                                       std::move(init), false));
@@ -87,7 +87,7 @@ antlrcpp::Any AstVisitor::visitVarDecl(SysyParser::VarDeclContext *const ctx) {
 }
 
 antlrcpp::Any AstVisitor::visitInit(SysyParser::InitContext *const ctx) {
-    auto expr_ = std::any_cast<Expression *>(ctx->exp()->accept(this));
+    auto expr_ = (ctx->exp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> expr(expr_);
     return new Initializer(std::move(expr));
 }
@@ -96,24 +96,24 @@ antlrcpp::Any
 AstVisitor::visitInitList(SysyParser::InitListContext *const ctx) {
     std::vector<std::unique_ptr<Initializer>> values;
     for (auto init : ctx->initVal()) {
-        auto const value = std::any_cast<Initializer *>(init->accept(this));
+        auto const value = (init->accept(this)).as<Initializer *>();
         values.emplace_back(value);
     }
     return new Initializer(std::move(values));
 }
 
 antlrcpp::Any AstVisitor::visitFuncDef(SysyParser::FuncDefContext *const ctx) {
-    auto const type_ = std::any_cast<ScalarType *>(ctx->funcType()->accept(this));
+    auto const type_ = (ctx->funcType()->accept(this)).as<ScalarType *>();
     std::unique_ptr<ScalarType> type(type_);
     Identifier ident(ctx->Ident()->getText(), false);
     std::vector<std::unique_ptr<Parameter>> params;
     if (auto params_ = ctx->funcFParams()) {
         for (auto param_ : params_->funcFParam()) {
-            auto const param = std::any_cast<Parameter *>(param_->accept(this));
+            auto const param = (param_->accept(this)).as<Parameter *>();
             params.emplace_back(param);
         }
     }
-    auto const body_ = std::any_cast<Block *>(ctx->block()->accept(this));
+    auto const body_ = (ctx->block()->accept(this)).as<Block *>();
     std::unique_ptr<Block> body(body_);
     return new Function(std::move(type), std::move(ident), std::move(params),
                         std::move(body));
@@ -125,14 +125,14 @@ antlrcpp::Any AstVisitor::visitVoid(SysyParser::VoidContext *const ctx) {
 
 antlrcpp::Any
 AstVisitor::visitScalarParam(SysyParser::ScalarParamContext *const ctx) {
-    auto const type_ = std::any_cast<ScalarType *>(ctx->bType()->accept(this));
+    auto const type_ = (ctx->bType()->accept(this)).as<ScalarType *>();
     std::unique_ptr<SysYType> type(type_);
     Identifier ident(ctx->Ident()->getText());
     return new Parameter(std::move(type), std::move(ident));
 }
 
 antlrcpp::Any AstVisitor::visitArrayParam(SysyParser::ArrayParamContext *ctx) {
-    auto const basic_type_ = std::any_cast<ScalarType *>(ctx->bType()->accept(this));
+    auto const basic_type_ = (ctx->bType()->accept(this)).as<ScalarType *>();
     std::unique_ptr<ScalarType> basic_type(basic_type_);
     Identifier ident(ctx->Ident()->getText());
     auto dimensions = this->visitDimensions(ctx->exp());
@@ -150,7 +150,7 @@ antlrcpp::Any AstVisitor::visitBlock(SysyParser::BlockContext *const ctx) {
                 children.emplace_back(std::unique_ptr<Declaration>(d));
             }
         } else if (auto stmt_ = item->stmt()) {
-            auto const stmt = std::any_cast<Statement *>(stmt_->accept(this));
+            auto const stmt = (stmt_->accept(this)).as<Statement *>();
             children.emplace_back(std::unique_ptr<Statement>(stmt));
         } else {
             assert(false);
@@ -160,9 +160,9 @@ antlrcpp::Any AstVisitor::visitBlock(SysyParser::BlockContext *const ctx) {
 }
 
 antlrcpp::Any AstVisitor::visitAssign(SysyParser::AssignContext *const ctx) {
-    auto const lhs_ = std::any_cast<LValue *>(ctx->lVal()->accept(this));
+    auto const lhs_ = (ctx->lVal()->accept(this)).as<LValue *>();
     std::unique_ptr<LValue> lhs(lhs_);
-    auto const rhs_ = std::any_cast<Expression *>(ctx->exp()->accept(this));
+    auto const rhs_ = (ctx->exp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> rhs(rhs_);
     auto const ret = new Assignment(std::move(lhs), std::move(rhs));
     return static_cast<Statement *>(ret);
@@ -172,7 +172,7 @@ antlrcpp::Any
 AstVisitor::visitExprStmt(SysyParser::ExprStmtContext *const ctx) {
     std::unique_ptr<Expression> expr;
     if (auto expr_ = ctx->exp()) {
-        expr.reset(std::any_cast<Expression *>(expr_->accept(this)));
+        expr.reset((expr_->accept(this))).as<Expression *>();
     }
     auto const ret = new ExprStmt(std::move(expr));
     return static_cast<Statement *>(ret);
@@ -180,18 +180,18 @@ AstVisitor::visitExprStmt(SysyParser::ExprStmtContext *const ctx) {
 
 antlrcpp::Any
 AstVisitor::visitBlockStmt(SysyParser::BlockStmtContext *const ctx) {
-    auto const ret = std::any_cast<Block *>(ctx->block()->accept(this));
+    auto const ret = (ctx->block()->accept(this)).as<Block *>();
     return static_cast<Statement *>(ret);
 }
 
 antlrcpp::Any AstVisitor::visitIfElse(SysyParser::IfElseContext *const ctx) {
-    auto const cond_ = std::any_cast<Expression *>(ctx->cond()->accept(this));
+    auto const cond_ = (ctx->cond()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> cond(cond_);
-    auto const then_ = std::any_cast<Statement *>(ctx->stmt(0)->accept(this));
+    auto const then_ = (ctx->stmt(0)->accept(this)).as<Statement *>();
     std::unique_ptr<Statement> then(then_);
     std::unique_ptr<Statement> else_;
     if (ctx->Else() != nullptr) {
-        else_.reset(std::any_cast<Statement *>(ctx->stmt(1)->accept(this)));
+        else_.reset((ctx->stmt(1)->accept(this))).as<Statement *>();
     }
     auto const ret = new IfElse(std::move(cond), std::move(then), std::move(else_));
     return static_cast<Statement *>(ret);
@@ -199,9 +199,9 @@ antlrcpp::Any AstVisitor::visitIfElse(SysyParser::IfElseContext *const ctx) {
 
 // TODO: Complete this method correctly by filling in the parameters
 antlrcpp::Any AstVisitor::visitWhile(SysyParser::WhileContext *const ctx) {
-    auto const cond_ = std::any_cast<Expression *>(ctx->cond()->accept(this));
+    auto const cond_ = (ctx->cond()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> cond(cond_);
-    auto const body_ = std::any_cast<Statement *>(ctx->stmt()->accept(this));
+    auto const body_ = (ctx->stmt()->accept(this)).as<Statement *>();
     std::unique_ptr<Statement> body(body_);
     auto ret = new While(std::move(cond), std::move(body));
     return static_cast<Statement *>(ret);
@@ -223,7 +223,7 @@ antlrcpp::Any
 AstVisitor::visitReturn(SysyParser::ReturnContext *const ctx) {
     std::unique_ptr<Expression> expr;
     if (ctx->exp() != nullptr) {
-        expr.reset(std::any_cast<Expression *>(ctx->exp()->accept(this)));
+        expr.reset((ctx->exp()->accept(this))).as<Expression *>();
     }
     auto const ret = new Return(std::move(expr));
     return static_cast<Statement *>(ret);
@@ -235,7 +235,7 @@ AstVisitor::visitLVal(SysyParser::LValContext *ctx) {
     auto ident = Identifier(ctx->Ident()->getText());
     std::vector<std::unique_ptr<Expression>> indices;
     for(const auto &index: ctx->exp()) {
-        auto expr_ = std::any_cast<Expression *>(index->accept(this));
+        auto expr_ = (index->accept(this)).as<Expression *>();
         std::unique_ptr<Expression> expr(expr_);
         indices.push_back(std::move(expr));
     }
@@ -249,11 +249,11 @@ AstVisitor::visitPrimaryExp_(SysyParser::PrimaryExp_Context *ctx) {
     } else {
         assert(ctx->number() != nullptr);
         if(ctx->number()->intConst() != nullptr) {
-            auto lit = std::any_cast<IntLiteral *>(ctx->number()->intConst()->accept(this));
+            auto lit = (ctx->number()->intConst()->accept(this)).as<IntLiteral *>();
             return static_cast<Expression *>(lit);
         } else {
             assert(ctx->number()->floatConst() != nullptr);
-            auto lit = std::any_cast<FloatLiteral *>(ctx->number()->floatConst()->accept(this));
+            auto lit = (ctx->number()->floatConst()->accept(this)).as<FloatLiteral *>();
             return static_cast<Expression *>(lit);
         }
 
@@ -262,7 +262,7 @@ AstVisitor::visitPrimaryExp_(SysyParser::PrimaryExp_Context *ctx) {
 
 antlrcpp::Any
 AstVisitor::visitLValExpr(SysyParser::LValExprContext *ctx) {
-    auto lval_ = std::any_cast<LValue *>(ctx->lVal()->accept(this));
+    auto lval_ = (ctx->lVal()->accept(this)).as<LValue *>();
     return static_cast<Expression *>(lval_);
 }
 
@@ -300,40 +300,37 @@ antlrcpp::Any
 AstVisitor::visitCall(SysyParser::CallContext *ctx) {
     Identifier ident(ctx->Ident()->getText(), false);
     std::vector<Call::Argument> args;
-    if(ctx->funcRParams() != nullptr) {
-        for(const auto &arg: ctx->funcRParams()->funcRParam()) {
-            if(arg->exp() != nullptr) {
-                auto expr_ = std::any_cast<Expression *>(arg->exp()->accept(this));
-                std::unique_ptr<Expression> expr(expr_);
-                args.emplace_back(std::move(expr));
-            } else {
-                assert(arg->stringConst() != nullptr);
-                auto str = std::any_cast<StringLiteral>(arg->stringConst()->accept(this));
-                args.emplace_back(std::move(str));
-            }
+    for(const auto &arg: ctx->funcRParams()->funcRParam()) {
+        if(arg->exp() != nullptr) {
+            auto expr_ = (arg->exp()->accept(this)).as<Expression *>();
+            std::unique_ptr<Expression> expr(expr_);
+            args.emplace_back(std::move(expr));
+        } else {
+            assert(arg->stringConst() != nullptr);
+            auto str = (arg->stringConst()->accept(this)).as<StringLiteral>();
+            args.emplace_back(std::move(str));
         }
     }
-
     return static_cast<Expression *>(new Call(ident, std::move(args), ctx->getStart()->getLine()));
 }
 
 antlrcpp::Any
 AstVisitor::visitUnaryAdd(SysyParser::UnaryAddContext *ctx) {
-    auto unary_ = std::any_cast<Expression *>(ctx->unaryExp()->accept(this));
+    auto unary_ = (ctx->unaryExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> unary(unary_);
     return static_cast<Expression *>(new UnaryExpr(UnaryOp::Add, std::move(unary)));
 }
 
 antlrcpp::Any
 AstVisitor::visitUnarySub(SysyParser::UnarySubContext *ctx) {
-    auto unary_ = std::any_cast<Expression *>(ctx->unaryExp()->accept(this));
+    auto unary_ = (ctx->unaryExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> unary(unary_);
     return static_cast<Expression *>(new UnaryExpr(UnaryOp::Sub, std::move(unary)));
 }
 
 antlrcpp::Any
 AstVisitor::visitNot(SysyParser::NotContext *ctx) {
-    auto unary_ = std::any_cast<Expression *>(ctx->unaryExp()->accept(this));
+    auto unary_ = (ctx->unaryExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> unary(unary_);
     return static_cast<Expression *>(new UnaryExpr(UnaryOp::Not, std::move(unary)));
 }
@@ -345,117 +342,117 @@ AstVisitor::visitStringConst(SysyParser::StringConstContext *ctx) {
 
 antlrcpp::Any
 AstVisitor::visitDiv(SysyParser::DivContext *ctx) {
-    auto mul_ = std::any_cast<Expression *>(ctx->mulExp()->accept(this));
+    auto mul_ = (ctx->mulExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> mul(mul_);
-    auto unary_ = std::any_cast<Expression *>(ctx->unaryExp()->accept(this));
+    auto unary_ = (ctx->unaryExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> unary(unary_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Div, std::move(mul), std::move(unary)));
 }
 
 antlrcpp::Any
 AstVisitor::visitMod(SysyParser::ModContext *ctx) {
-    auto mul_ = std::any_cast<Expression *>(ctx->mulExp()->accept(this));
+    auto mul_ = (ctx->mulExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> mul(mul_);
-    auto unary_ = std::any_cast<Expression *>(ctx->unaryExp()->accept(this));
+    auto unary_ = (ctx->unaryExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> unary(unary_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Mod, std::move(mul), std::move(unary)));
 }
 
 antlrcpp::Any
 AstVisitor::visitMul(SysyParser::MulContext *ctx) {
-    auto mul_ = std::any_cast<Expression *>(ctx->mulExp()->accept(this));
+    auto mul_ = (ctx->mulExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> mul(mul_);
-    auto unary_ = std::any_cast<Expression *>(ctx->unaryExp()->accept(this));
+    auto unary_ = (ctx->unaryExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> unary(unary_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Mul, std::move(mul), std::move(unary)));
 }
 
 antlrcpp::Any
 AstVisitor::visitAdd(SysyParser::AddContext *ctx) {
-    auto add_ = std::any_cast<Expression *>(ctx->addExp()->accept(this));
+    auto add_ = (ctx->addExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> add(add_);
-    auto mul_ = std::any_cast<Expression *>(ctx->mulExp()->accept(this));
+    auto mul_ = (ctx->mulExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> mul(mul_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Add, std::move(add), std::move(mul)));
 }
 
 antlrcpp::Any
 AstVisitor::visitSub(SysyParser::SubContext *ctx) {
-    auto add_ = std::any_cast<Expression *>(ctx->addExp()->accept(this));
+    auto add_ = (ctx->addExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> add(add_);
-    auto mul_ = std::any_cast<Expression *>(ctx->mulExp()->accept(this));
+    auto mul_ = (ctx->mulExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> mul(mul_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Sub, std::move(add), std::move(mul)));
 }
 
 antlrcpp::Any
 AstVisitor::visitGeq(SysyParser::GeqContext *ctx) {
-    auto rel_ = std::any_cast<Expression *>(ctx->relExp()->accept(this));
+    auto rel_ = (ctx->relExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> rel(rel_);
-    auto add_ = std::any_cast<Expression *>(ctx->addExp()->accept(this));
+    auto add_ = (ctx->addExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> add(add_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Geq, std::move(rel), std::move(add)));
 }
 
 antlrcpp::Any
 AstVisitor::visitLt(SysyParser::LtContext *ctx) {
-    auto rel_ = std::any_cast<Expression *>(ctx->relExp()->accept(this));
+    auto rel_ = (ctx->relExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> rel(rel_);
-    auto add_ = std::any_cast<Expression *>(ctx->addExp()->accept(this));
+    auto add_ = (ctx->addExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> add(add_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Lt, std::move(rel), std::move(add)));
 }
 
 antlrcpp::Any
 AstVisitor::visitLeq(SysyParser::LeqContext *ctx) {
-    auto rel_ = std::any_cast<Expression *>(ctx->relExp()->accept(this));
+    auto rel_ = (ctx->relExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> rel(rel_);
-    auto add_ = std::any_cast<Expression *>(ctx->addExp()->accept(this));
+    auto add_ = (ctx->addExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> add(add_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Leq, std::move(rel), std::move(add)));
 }
 
 antlrcpp::Any
 AstVisitor::visitGt(SysyParser::GtContext *ctx) {
-    auto rel_ = std::any_cast<Expression *>(ctx->relExp()->accept(this));
+    auto rel_ = (ctx->relExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> rel(rel_);
-    auto add_ = std::any_cast<Expression *>(ctx->addExp()->accept(this));
+    auto add_ = (ctx->addExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> add(add_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Gt, std::move(rel), std::move(add)));
 }
 
 antlrcpp::Any
 AstVisitor::visitNeq(SysyParser::NeqContext *ctx) {
-    auto eq_ = std::any_cast<Expression *>(ctx->eqExp()->accept(this));
+    auto eq_ = (ctx->eqExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> eq(eq_);
-    auto rel_ = std::any_cast<Expression *>(ctx->relExp()->accept(this));
+    auto rel_ = (ctx->relExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> rel(rel_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Neq, std::move(eq), std::move(rel)));
 }
 
 antlrcpp::Any
 AstVisitor::visitEq(SysyParser::EqContext *ctx) {
-    auto eq_ = std::any_cast<Expression *>(ctx->eqExp()->accept(this));
+    auto eq_ = (ctx->eqExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> eq(eq_);
-    auto rel_ = std::any_cast<Expression *>(ctx->relExp()->accept(this));
+    auto rel_ = (ctx->relExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> rel(rel_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::Eq, std::move(eq), std::move(rel)));
 }
 
 antlrcpp::Any
 AstVisitor::visitAnd(SysyParser::AndContext *ctx) {
-    auto lAnd_ = std::any_cast<Expression *>(ctx->lAndExp()->accept(this));
+    auto lAnd_ = (ctx->lAndExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> lAnd(lAnd_);
-    auto eq_ = std::any_cast<Expression *>(ctx->eqExp()->accept(this));
+    auto eq_ = (ctx->eqExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> eq(eq_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::And, std::move(lAnd), std::move(eq)));
 }
 
 antlrcpp::Any
 AstVisitor::visitOr(SysyParser::OrContext *ctx) {
-    auto lOr_ = std::any_cast<Expression *>(ctx->lOrExp()->accept(this));
+    auto lOr_ = (ctx->lOrExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> lOr(lOr_);
-    auto lAnd_ = std::any_cast<Expression *>(ctx->lAndExp()->accept(this));
+    auto lAnd_ = (ctx->lAndExp()->accept(this)).as<Expression *>();
     std::unique_ptr<Expression> lAnd(lAnd_);
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::And, std::move(lOr), std::move(lAnd)));
 }
@@ -469,7 +466,7 @@ std::vector<std::unique_ptr<Expression>>
 AstVisitor::visitDimensions(const std::vector<SysyParser::ExpContext *> &ctxs) {
     std::vector<std::unique_ptr<Expression>> ret;
     for(auto const &ctx: ctxs) {
-        auto expr_ = std::any_cast<Expression *>(ctx->accept(this));
+        auto expr_ = (ctx->accept(this)).as<Expression *>();
         std::unique_ptr<Expression> expr(expr_);
         ret.push_back(std::move(expr));
     }

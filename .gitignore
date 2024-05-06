@@ -1,0 +1,5 @@
+.antlr
+cmake-build-debug
+generated
+build
+.idea
