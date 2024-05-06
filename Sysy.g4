@@ -72,7 +72,7 @@ stmt
     | While Lparen cond Rparen stmt # while
     | Break Semicolon # break
     | Continue Semicolon # continue
-    | Return exp Semicolon # return
+    | Return exp? Semicolon # return
 
     ;
 
