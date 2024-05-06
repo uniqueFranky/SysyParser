@@ -457,6 +457,11 @@ AstVisitor::visitOr(SysyParser::OrContext *ctx) {
     return static_cast<Expression *>(new BinaryExpr(BinaryOp::And, std::move(lOr), std::move(lAnd)));
 }
 
+antlrcpp::Any
+AstVisitor::visitNumber(SysyParser::NumberContext *ctx) {
+    assert(false);
+}
+
 std::vector<std::unique_ptr<Expression>>
 AstVisitor::visitDimensions(const std::vector<SysyParser::ExpContext *> &ctxs) {
     std::vector<std::unique_ptr<Expression>> ret;
