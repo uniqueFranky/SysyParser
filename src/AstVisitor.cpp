@@ -17,7 +17,7 @@ AstVisitor::visitCompUnit(SysyParser::CompUnitContext *const ctx) {
     std::vector<CompileUnit::Child> children;
     for (auto item : ctx->compUnitItem()) {
         if (auto decl = item->decl()) {
-            auto const decls = std::any_cast<std::shared_ptr<std::vector<Declaration *>>>(decl->accept(this));
+            auto const decls = (decl->accept(this)).as<std::shared_ptr<std::vector<Declaration *>>();
             for (auto d : *decls) {
                 children.emplace_back(std::unique_ptr<Declaration>(d));
             }
@@ -78,7 +78,7 @@ antlrcpp::Any AstVisitor::visitVarDecl(SysyParser::VarDeclContext *const ctx) {
         }
         std::unique_ptr<Initializer> init;
         if (auto init_val = def->initVal()) {
-            init.reset((init_val->accept(this))).as<Initializer *>();
+            init.reset((init_val->accept(this)).as<Initializer *>();
         }
         ret.push_back(new Declaration(std::move(type), std::move(ident),
                                       std::move(init), false));
@@ -223,7 +223,7 @@ antlrcpp::Any
 AstVisitor::visitReturn(SysyParser::ReturnContext *const ctx) {
     std::unique_ptr<Expression> expr;
     if (ctx->exp() != nullptr) {
-        expr.reset((ctx->exp()->accept(this))).as<Expression *>();
+        expr.reset((ctx->exp()->accept(this)).as<Expression *>());
     }
     auto const ret = new Return(std::move(expr));
     return static_cast<Statement *>(ret);
