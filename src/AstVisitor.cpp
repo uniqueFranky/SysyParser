@@ -145,7 +145,7 @@ antlrcpp::Any AstVisitor::visitBlock(SysyParser::BlockContext *const ctx) {
     std::vector<Block::Child> children;
     for (auto item : ctx->blockItem()) {
         if (auto decl = item->decl()) {
-            auto const decls = std::any_cast<std::shared_ptr<std::vector<Declaration *>>>(decl->accept(this));
+            auto const decls = decl->accept(this).as<std::shared_ptr<std::vector<Declaration *>>>();
             for (auto d : *decls) {
                 children.emplace_back(std::unique_ptr<Declaration>(d));
             }
