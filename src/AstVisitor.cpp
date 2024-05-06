@@ -300,17 +300,20 @@ antlrcpp::Any
 AstVisitor::visitCall(SysyParser::CallContext *ctx) {
     Identifier ident(ctx->Ident()->getText(), false);
     std::vector<Call::Argument> args;
-    for(const auto &arg: ctx->funcRParams()->funcRParam()) {
-        if(arg->exp() != nullptr) {
-            auto expr_ = (arg->exp()->accept(this)).as<Expression *>();
-            std::unique_ptr<Expression> expr(expr_);
-            args.emplace_back(std::move(expr));
-        } else {
-            assert(arg->stringConst() != nullptr);
-            auto str = (arg->stringConst()->accept(this)).as<StringLiteral>();
-            args.emplace_back(std::move(str));
+    if(ctx->funcRParams() != nullptr) {
+        for(const auto &arg: ctx->funcRParams()->funcRParam()) {
+            if(arg->exp() != nullptr) {
+                auto expr_ = (arg->exp()->accept(this)).as<Expression *>();
+                std::unique_ptr<Expression> expr(expr_);
+                args.emplace_back(std::move(expr));
+            } else {
+                assert(arg->stringConst() != nullptr);
+                auto str = (arg->stringConst()->accept(this)).as<StringLiteral>();
+                args.emplace_back(std::move(str));
+            }
         }
     }
+
     return static_cast<Expression *>(new Call(ident, std::move(args), ctx->getStart()->getLine()));
 }
 
