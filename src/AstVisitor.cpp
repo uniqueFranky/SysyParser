@@ -78,7 +78,7 @@ antlrcpp::Any AstVisitor::visitVarDecl(SysyParser::VarDeclContext *const ctx) {
         }
         std::unique_ptr<Initializer> init;
         if (auto init_val = def->initVal()) {
-            init.reset((init_val->accept(this)).as<Initializer *>();
+            init.reset((init_val->accept(this)).as<Initializer *>());
         }
         ret.push_back(new Declaration(std::move(type), std::move(ident),
                                       std::move(init), false));
@@ -172,7 +172,7 @@ antlrcpp::Any
 AstVisitor::visitExprStmt(SysyParser::ExprStmtContext *const ctx) {
     std::unique_ptr<Expression> expr;
     if (auto expr_ = ctx->exp()) {
-        expr.reset((expr_->accept(this))).as<Expression *>();
+        expr.reset((expr_->accept(this)).as<Expression *>());
     }
     auto const ret = new ExprStmt(std::move(expr));
     return static_cast<Statement *>(ret);
@@ -191,7 +191,7 @@ antlrcpp::Any AstVisitor::visitIfElse(SysyParser::IfElseContext *const ctx) {
     std::unique_ptr<Statement> then(then_);
     std::unique_ptr<Statement> else_;
     if (ctx->Else() != nullptr) {
-        else_.reset((ctx->stmt(1)->accept(this))).as<Statement *>();
+        else_.reset((ctx->stmt(1)->accept(this)).as<Statement *>());
     }
     auto const ret = new IfElse(std::move(cond), std::move(then), std::move(else_));
     return static_cast<Statement *>(ret);
