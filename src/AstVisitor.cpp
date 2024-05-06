@@ -222,8 +222,8 @@ AstVisitor::visitContinue(SysyParser::ContinueContext *const ctx) {
 antlrcpp::Any
 AstVisitor::visitReturn(SysyParser::ReturnContext *const ctx) {
     std::unique_ptr<Expression> expr;
-    if (auto expr_ = ctx->exp()) {
-        expr.reset(std::any_cast<Expression *>(expr_->accept(this)));
+    if (ctx->exp() != nullptr) {
+        expr.reset(std::any_cast<Expression *>(ctx->exp()->accept(this)));
     }
     auto const ret = new Return(std::move(expr));
     return static_cast<Statement *>(ret);
